@@ -3,45 +3,39 @@ import requests
 import threading
 import time
 import importlib
-import uvicorn
 
 # Import the Robyn API from api.py
 api_module = importlib.import_module("api")
-
-# Function to start the Robyn API server using uvicorn
-def start_api():
-    uvicorn.run(api_module.app, host="127.0.0.1", port=8000)
 
 # Start the API if it's not already running
 if 'api_thread' not in st.session_state:
     api_thread = threading.Thread(target=start_api, daemon=True)
     api_thread.start()
     time.sleep(2)  # Allow some time for the server to start
+# Base URL for the Robyn backend
+BASE_URL = "http://localhost:8080"  # Adjust if necessary
 
-API_URL = "http://localhost:8000"  # Local API URL
+# Title of the app
+st.title("Task Manager")
 
-st.title("Simple Task Manager")
-
-# Input to add a task
-task = st.text_input("Enter a new task")
-
-if st.button("Add Task"):
-    if task:
-        response = requests.post(f"{API_URL}/tasks", json={"task": task})
-        if response.status_code == 200:
-            st.success("Task added successfully!")
-        else:
-            st.error("Failed to add task.")
+# Section to create a new task
+st.header("Create a New Task")
+task_name = st.text_input("Task Name")
+if st.button("Create Task"):
+    response = requests.post(f"{BASE_URL}/task", json={"name": task_name})
+    if response.status_code == 201:
+        st.success("Task created successfully!")
     else:
-        st.error("Please enter a task.")
+        st.error("Error creating task.")
 
-# Display existing tasks
-st.subheader("Existing Tasks:")
-try:
-    tasks_response = requests.get(f"{API_URL}/tasks")
-    tasks = tasks_response.json().get("tasks", [])
-    for idx, t in enumerate(tasks):
-        st.write(f"{idx + 1}. {t}")
-except Exception as e:
-    st.error("Failed to load tasks.")
+# Section to fetch and display tasks
+st.header("Get Task by ID")
+task_id = st.text_input("Enter Task ID")
+if st.button("Fetch Task"):
+    response = requests.get(f"{BASE_URL}/task/{task_id}")
+    if response.status_code == 200:
+        task = response.json()
+        st.write(f"Task ID: {task['id']}, Name: {task['name']}, Status: {task['status']}")
+    else:
+        st.error("Task not found.")
 
