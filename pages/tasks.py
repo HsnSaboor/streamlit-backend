@@ -1,15 +1,19 @@
-from robyn import Robyn, jsonify
+from robyn import Robyn
+from flask import jsonify
 
-app = Robyn(__file__)
+app = Robyn()
 
-@app.get("/")
-async def home(request):
+@app.get("/")  # Home route
+async def home():
     return "Welcome to the API!"
 
-@app.route('/tasks')  # Renamed route to /tasks
-def tasks():
-    # Your tasks logic
+@app.get("/tasks")  # Tasks route
+async def tasks():
     return jsonify({"message": "Tasks endpoint"})
 
+@app.get("/data")  # Data route
+async def data():
+    return jsonify({"message": "Data endpoint"})
+
 if __name__ == "__main__":
-    app.start(port=8080, host="0.0.0.0")
+    app.run()
