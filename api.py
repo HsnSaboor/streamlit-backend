@@ -1,27 +1,19 @@
-# app.py
-from robyn import Robyn, jsonify, Response
+from flask import Flask, request, jsonify
 
-app = Robyn(__file__)
+app = Flask(__name__)
 
-# Example route for greeting
-@app.get("/greet")
-async def greet(request):
-    return jsonify({"message": "Hello, world!"})
+# Sample task storage
+tasks = []
 
-# Endpoint to get a task by ID
-@app.get("/task/<id>")
-async def get_task(request, path_params):
-    task_id = path_params["id"]
-    # Here you would normally retrieve the task from a database or other storage
-    return jsonify({"id": task_id, "name": f"Task {task_id}", "status": "pending"})
+@app.route('/task', methods=['POST'])
+def create_task():
+    task_data = request.json
+    tasks.append(task_data)  # Save task
+    return jsonify(task_data), 201
 
-# Endpoint to create a new task
-@app.post("/task")
-async def create_task(request):
-    task_data = await request.json()  # Get JSON body from request
-    # Here you would normally save the task to a database
-    return Response(status_code=201, description="Task created")
+@app.route('/task', methods=['GET'])
+def get_tasks():
+    return jsonify(tasks), 200
 
-# Starting the server
-if __name__ == "__main__":
-    app.start(port=8080, host="127.0.0.1")
+if __name__ == '__main__':
+    app.run(port=8080)  # Ensure it's running on port 8080
