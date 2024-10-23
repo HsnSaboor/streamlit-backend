@@ -3,13 +3,14 @@ import requests
 import threading
 import time
 import importlib
+import uvicorn
 
 # Import the Robyn API from api.py
 api_module = importlib.import_module("api")
 
-# Function to start the Robyn API server in a thread
+# Function to start the Robyn API server using uvicorn
 def start_api():
-    api_module.app.run(port=8000)
+    uvicorn.run(api_module.app, host="127.0.0.1", port=8000)
 
 # Start the API if it's not already running
 if 'api_thread' not in st.session_state:
