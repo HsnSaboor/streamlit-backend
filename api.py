@@ -2,10 +2,12 @@ from robyn import Robyn
 
 app = Robyn(__name__)
 
-tasks = []  # This will hold our tasks
+tasks = []  # List to hold tasks
 
 @app.post("/tasks")
-async def add_task(task: str):
+async def add_task(request):
+    data = await request.json()
+    task = data.get("task")
     tasks.append(task)
     return {"message": "Task added successfully!", "tasks": tasks}
 
@@ -17,4 +19,4 @@ async def get_tasks():
 async def health_check():
     return {"status": "API is up and running!"}
 
-# You don't run the app here; it will be run from an ASGI server instead
+# No need to run the app here; it will be done by Uvicorn
