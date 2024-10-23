@@ -1,42 +1,23 @@
-# app.py
 import streamlit as st
 import requests
 
-API_URL = "http://localhost:8000/task"
+# Define your API URL (make sure this matches where your API will be hosted)
+API_URL = "http://localhost:8080"  # Change to your deployed API URL
 
-st.set_page_config(page_title="Task Manager", layout="wide")
-
-# Sidebar navigation
-st.sidebar.title("Navigation")
-selection = st.sidebar.radio("Go to", ["Create Task", "View Tasks"])
-
-# Create Task Page
-if selection == "Create Task":
-    st.title("Create a New Task")
-    task_name = st.text_input("Task Name")
-
-    if st.button("Create Task"):
-        if task_name:
-            response = requests.post(API_URL, json={"name": task_name})
-            if response.status_code == 201:
-                st.success("Task created successfully!")
-            else:
-                st.error(f"Failed to create task: {response.text}")
-        else:
-            st.warning("Please enter a task name.")
-
-# View Tasks Page
-elif selection == "View Tasks":
-    st.title("View Tasks")
-    response = requests.get(API_URL)
-
-    if response.status_code == 200:
-        tasks = response.json()
-        if tasks:
-            for task in tasks:
-                st.write(task['name'])
-        else:
-            st.write("No tasks available.")
+def call_api(endpoint, method='GET', data=None):
+    if method == 'POST':
+        response = requests.post(f"{API_URL}/{endpoint}", json=data)
     else:
-        st.error(f"Failed to retrieve tasks. Status code: {response.status_code}")
-        st.error(f"Response content: {response.text}")
+        response = requests.get(f"{API_URL}/{endpoint}")
+    
+    return response.json()
+
+# Streamlit UI
+st.title("My Streamlit App")
+
+# Call API to get data
+if st.button("Get Data"):
+    result = call_api("data")
+    st.write(result)
+
+# Handle other interactions
