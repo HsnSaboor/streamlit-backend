@@ -19,4 +19,5 @@ async def get_tasks():
 async def health_check():
     return {"status": "API is up and running!"}
 
-# No need to run the app here; it will be done by Uvicorn
+# This file does not need to run anything directly
+# It will be called by Uvicorn from the main app
