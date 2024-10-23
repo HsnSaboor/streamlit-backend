@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # Set API URL
-API_URL = "http://localhost:8080/task"
+API_URL = "http://backend-cloud.streamlit.app/task"
 
 # Title of the app
 st.title("Task Manager")
