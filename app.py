@@ -1,22 +1,21 @@
 import streamlit as st
 import requests
-import subprocess
-import os
+import threading
 import time
+import importlib
 
-# Define the path to the API script
-API_SCRIPT = 'api.py'
+# Import the Robyn API from api.py
+api_module = importlib.import_module("api")
 
-# Start the Robyn API server
+# Function to start the Robyn API server in a thread
 def start_api():
-    # Use subprocess to run the API server in a separate process
-    process = subprocess.Popen(['python', API_SCRIPT], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(2)  # Allow some time for the server to start
-    return process
+    api_module.app.run(port=8000)
 
 # Start the API if it's not already running
-if 'api_process' not in st.session_state:
-    st.session_state.api_process = start_api()
+if 'api_thread' not in st.session_state:
+    api_thread = threading.Thread(target=start_api, daemon=True)
+    api_thread.start()
+    time.sleep(2)  # Give the server some time to start
 
 API_URL = "http://localhost:8000"  # Local API URL
 
