@@ -1,8 +1,10 @@
 # task.py
 import robyn
 import json
+from robyn import Robyn
 
-app = robyn.Robyn()
+# Create an instance of the Robyn app
+app = Robyn(file_object=None)
 
 tasks = []
 
