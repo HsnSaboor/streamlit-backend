@@ -1,23 +1,16 @@
 import streamlit as st
-import requests
 
-# Define your API URL (make sure this matches where your API will be hosted)
-API_URL = "http://localhost:8080"  # Change to your deployed API URL
+# Navigation
+if st.sidebar.button("Tasks"):
+    st.experimental_set_query_params(page="tasks")
+elif st.sidebar.button("Data"):
+    st.experimental_set_query_params(page="data")
 
-def call_api(endpoint, method='GET', data=None):
-    if method == 'POST':
-        response = requests.post(f"{API_URL}/{endpoint}", json=data)
-    else:
-        response = requests.get(f"{API_URL}/{endpoint}")
-    
-    return response.json()
-
-# Streamlit UI
-st.title("My Streamlit App")
-
-# Call API to get data
-if st.button("Get Data"):
-    result = call_api("data")
-    st.write(result)
-
-# Handle other interactions
+# Handle routing
+page = st.experimental_get_query_params().get("page", ["tasks"])[0]
+if page == "tasks":
+    st.title("Tasks Page")
+    # Render tasks here
+elif page == "data":
+    st.title("Data Page")
+    # Render data here
