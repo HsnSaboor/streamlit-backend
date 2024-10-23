@@ -7,11 +7,6 @@ import importlib
 # Import the Robyn API from api.py
 api_module = importlib.import_module("api")
 
-# Start the API if it's not already running
-if 'api_thread' not in st.session_state:
-    api_thread = threading.Thread(target=start_api, daemon=True)
-    api_thread.start()
-    time.sleep(2)  # Allow some time for the server to start
 # Base URL for the Robyn backend
 BASE_URL = "http://localhost:8080"  # Adjust if necessary
 
