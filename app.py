@@ -16,7 +16,7 @@ def start_api():
 if 'api_thread' not in st.session_state:
     api_thread = threading.Thread(target=start_api, daemon=True)
     api_thread.start()
-    time.sleep(2)  # Give the server some time to start
+    time.sleep(2)  # Allow some time for the server to start
 
 API_URL = "http://localhost:8000"  # Local API URL
 
