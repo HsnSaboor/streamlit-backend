@@ -1,19 +1,24 @@
-from flask import Flask, request, jsonify
+# task.py
+import robyn
+import json
 
-app = Flask(__name__)
+app = robyn.Robyn()
 
-# Sample task storage
 tasks = []
 
-@app.route('/task', methods=['POST'])
-def create_task():
-    task_data = request.json
-    tasks.append(task_data)  # Save task
-    return jsonify(task_data), 201
+@app.route('/task', methods=['GET', 'POST'])
+async def handle_tasks(request):
+    if request.method == 'GET':
+        return json.dumps(tasks)
 
-@app.route('/task', methods=['GET'])
-def get_tasks():
-    return jsonify(tasks), 200
+    elif request.method == 'POST':
+        task_data = await request.json()
+        task_name = task_data.get('name', None)
+        if task_name:
+            task = {'name': task_name}
+            tasks.append(task)
+            return json.dumps(task), 201
+        return {'error': 'Task name is required'}, 400
 
 if __name__ == '__main__':
-    app.run(port=8080)  # Ensure it's running on port 8080
+    app.run()
