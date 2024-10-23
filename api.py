@@ -1,23 +1,27 @@
-from robyn import Robyn
+# app.py
+from robyn import Robyn, jsonify, Response
 
-app = Robyn(__name__)
+app = Robyn(__file__)
 
-tasks = []  # List to hold tasks
+# Example route for greeting
+@app.get("/greet")
+async def greet(request):
+    return jsonify({"message": "Hello, world!"})
 
-@app.post("/tasks")
-async def add_task(request):
-    data = await request.json()
-    task = data.get("task")
-    tasks.append(task)
-    return {"message": "Task added successfully!", "tasks": tasks}
+# Endpoint to get a task by ID
+@app.get("/task/<id>")
+async def get_task(request, path_params):
+    task_id = path_params["id"]
+    # Here you would normally retrieve the task from a database or other storage
+    return jsonify({"id": task_id, "name": f"Task {task_id}", "status": "pending"})
 
-@app.get("/tasks")
-async def get_tasks():
-    return {"tasks": tasks}
+# Endpoint to create a new task
+@app.post("/task")
+async def create_task(request):
+    task_data = await request.json()  # Get JSON body from request
+    # Here you would normally save the task to a database
+    return Response(status_code=201, description="Task created")
 
-@app.get("/health")
-async def health_check():
-    return {"status": "API is up and running!"}
-
-# This file does not need to run anything directly
-# It will be called by Uvicorn from the main app
+# Starting the server
+if __name__ == "__main__":
+    app.start(port=8080, host="0.0.0.0")
