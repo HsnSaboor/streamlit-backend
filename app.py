@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # Set API URL
-API_URL = "http://backend-cloud.streamlit.app/task"
+API_URL = "http://localhost:8080/task"
 
 # Title of the app
 st.title("Task Manager")
@@ -25,9 +25,19 @@ if st.button("Create Task"):
 # Section to display tasks
 st.header("Tasks")
 response = requests.get(API_URL)
+
+# Check if the response was successful
 if response.status_code == 200:
-    tasks = response.json()
-    for task in tasks:
-        st.write(task['name'])
+    try:
+        # Attempt to parse the response as JSON
+        tasks = response.json()
+        for task in tasks:
+            st.write(task['name'])
+    except ValueError as e:
+        # Handle JSON decoding errors
+        st.error(f"Failed to decode JSON: {response.text}")
+        st.error(f"Error details: {str(e)}")
 else:
-    st.error("Failed to retrieve tasks.")
+    # Log non-200 responses
+    st.error(f"Failed to retrieve tasks. Status code: {response.status_code}")
+    st.error(f"Response content: {response.text}")
