@@ -24,4 +24,4 @@ async def create_task(request):
 
 # Starting the server
 if __name__ == "__main__":
-    app.start(port=8080, host="0.0.0.0")
+    app.start(port=8080, host="127.0.0.1")
