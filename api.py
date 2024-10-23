@@ -17,5 +17,4 @@ async def get_tasks():
 async def health_check():
     return {"status": "API is up and running!"}
 
-if __name__ == "__main__":
-    app.run(port=8000)  # Ensure the API runs on port 8000
+# You don't run the app here; it will be run from an ASGI server instead
