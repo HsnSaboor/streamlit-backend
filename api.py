@@ -2,17 +2,20 @@ from robyn import Robyn
 
 app = Robyn(__name__)
 
-# In-memory task storage (for simplicity)
-tasks = []
-
-@app.get("/tasks")
-def get_tasks():
-    return {"tasks": tasks}
+tasks = []  # This will hold our tasks
 
 @app.post("/tasks")
-def add_task(task: str):
+async def add_task(task: str):
     tasks.append(task)
-    return {"message": "Task added", "tasks": tasks}
+    return {"message": "Task added successfully!", "tasks": tasks}
+
+@app.get("/tasks")
+async def get_tasks():
+    return {"tasks": tasks}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "API is up and running!"}
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=8000)  # Ensure the API runs on port 8000
